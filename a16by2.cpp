@@ -38,32 +38,23 @@ A16by2::displayMessage(LiquidCrystal_I2C* lcd, String messagein) {
 void
 A16by2::updateMessage(LiquidCrystal_I2C* lcd, String messagein, int lineNumber) {
 
-  if (LCD_LINE_1 == lineNumber)
+  int padChars = 16 - messagein.length();
+  for (int x = 0; x < padChars; x++)
+    messagein += ' ';
+  
+  if (LCD_LINE_1 == lineNumber)  {
+    lcd->home();
     mMessage1 = messagein;
-  else
+  }
+  else  {
+    lcd->setCursor(0, 1);
     mMessage2 = messagein;
+  }
 
   if (mBacklightState == LOW) return;
-  
-  int padChars = 16 - messagein.length();
-  String message = "";
-  for (int x = 0; x < padChars; x++)
-    if (LCD_LINE_1 == lineNumber) {
-      mMessage1 += ' ';
-	  message = mMessage1;
-	}
-    else   {
-      mMessage2 += ' ';
-	  message = mMessage2;
-    }
-
-  if (LCD_LINE_1 == lineNumber)
-    lcd->home();
-  else
-    lcd->setCursor(0, 1);
 
   delay(50);
-  lcd->print(message);
+  lcd->print(messagein);
 }
 
 void
